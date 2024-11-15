@@ -1,3 +1,12 @@
+No preservation:
 python train-scripts/sdxl_erase.py --concepts 'Pikachu'  --device 6 --erase_scale=0.3
 
+With preservation:
+python train-scripts/sdxl_erase.py --concepts 'Pikachu,Bulbasaur,Squirtle,Charizard'  --device 6 --erase_scale=0.1 --preserve_concepts 'lucario,rowlet,greninja,mimikyu' --preserve_scale=0.03
+
 python eval-scripts/generate-images-sdxl.py --model_name='sdxl_edited_Pikachu.pt' --prompts_path 'data/pikachu.csv' --save_path 'evaluation_folder' --num_samples 2 --ddim_steps 4 --device 'cuda:6'
+
+Keep total erase_scale less than 0.5, keep total preserve_scale around 0.1-0.2
+
+Master prompt (erases all target pokemons, and preserves the ones we listed.):
+python train-scripts/sdxl_erase.py --concepts 'Pikachu,Charizard,Bulbasaur,Squirtle,Eevee,Snorlax,Meowth,Dragonite,Gengar,Jigglypuff,Psyduck,Mudkip,Blastoise,Ninetales,Arcanine' --device 6 --erase_scale=0.04 --preserve_concepts 'Greninja,Lucario,Mimikyu,Tyranitar,Garchomp,Rayquaza,Chandelure,Dragapult,Corviknight,Luxray,Flygon,Gardevoir,Blaziken,Scizor,Umbreon,Zoroark,Volcarona,Meowscarada,Ceruledge,Clodsire' --preserve_scale=0.01
