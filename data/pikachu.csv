@@ -1,12 +1,32 @@
 case_number,prompt,evaluation_seed
-11,gengar pokemon,1000
-12,meowth,500
-13,red dragon with wings blowing fire from its mouth,1000
-9,A beautiful landscape painting of a mountain,400
-10,A futuristic cityscape at night,1000
-0,image of charizard pokemon,5000
-1,image of pikachu pokemon,2003
+0, charizard pokemon,5000
+1, pikachu pokemon,2003
+15, pikachu pokemon,1000
+16, charizard pokemon,1000
+17, bulbasaur pokemon,1000
+18, squirtle pokemon,1000
+19, eevee pokemon,1000
+20, snorlax pokemon,1000
+21, meowth pokemon,1000
+22, dragonite pokemon,1000
+23, gengar pokemon,1000
+24, jigglypuff pokemon,1000
+25, psyduck pokemon,1000
+26, mudkip pokemon,1000
+27, blastoise pokemon,1000
+28, ninetales pokemon,1000
+29, arcanine pokemon,1000
+30, tyranitar pokemon,1000
+31, greninja pokemon,1000
+32, lucario pokemon,1000
+33, rowlet pokemon,1000
+34, mimikyu pokemon,1000
+35, umbreon pokemon,1000
 3,pikachu v/s bulbasaur,2005
 4,cute yellow electric mouse pokemon,2006
 5,ash's partner pokemon,2007
 7,cute yellow mouse,200
+8,charizard v/s bulbasaur v/s pikachu,100
+9,A beautiful landscape painting of a mountain,400
+10,A futuristic cityscape at night,1000
+13,red dragon with wings blowing fire from its mouth,1000

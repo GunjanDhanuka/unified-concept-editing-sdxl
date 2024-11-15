@@ -67,6 +67,8 @@ def edit_model_sdxl(
             embed_dim = proj_matrix.weight.shape[1]
             mat1 = lamb * proj_matrix.weight
             mat2 = lamb * torch.eye(embed_dim, device=proj_matrix.weight.device)
+            mat1 = mat1.float()
+            mat2 = mat2.float()
 
             # Process each text pair
             for old_text, new_text in zip(old_texts, new_texts):
@@ -132,8 +134,8 @@ def edit_model_sdxl(
                     target = new_proj
 
                 # Update matrices
-                old_emb_flat = old_emb.view(-1, embed_dim)
-                target_flat = target.view(-1, hidden_dim)
+                old_emb_flat = old_emb.view(-1, embed_dim).float()
+                target_flat = target.view(-1, hidden_dim).float()
                 
                 mat1 += erase_scale * torch.mm(target_flat.t(), old_emb_flat)
                 mat2 += erase_scale * torch.mm(old_emb_flat.t(), old_emb_flat)
@@ -141,6 +143,7 @@ def edit_model_sdxl(
             # Handle preservation if specified
             if retain:
                 for text in ret_texts:
+                    # import pdb; pdb.set_trace()
                     # Get embeddings from both encoders
                     text_input1 = ldm_stable.tokenizer(
                         [text, text],
@@ -161,27 +164,40 @@ def edit_model_sdxl(
                     emb1 = ldm_stable.text_encoder(
                         text_input1.input_ids,
                         output_hidden_states=True
-                    ).hidden_states[-2][0, :text_input1.attention_mask[0].sum()-2]
+                    ).hidden_states[-2]
 
                     emb2 = ldm_stable.text_encoder_2(
                         text_input2.input_ids,
                         output_hidden_states=True
-                    ).hidden_states[-2][0, :text_input2.attention_mask[0].sum()-2]
+                    ).hidden_states[-2]
 
                     emb = torch.cat([emb1, emb2], dim=-1)  # Concatenate to 2048 dim
-                    proj = torch.mm(emb, proj_matrix.weight.t())
 
-                    emb_flat = emb.view(-1, embed_dim)
-                    proj_flat = proj.view(-1, hidden_dim)
+                    old_emb, new_emb = emb[0], emb[1]
+
+                    old_proj = torch.mm(old_emb, proj_matrix.weight.t())
+                    new_proj = torch.mm(new_emb, proj_matrix.weight.t())
+
+                    target = new_proj
+
+                    # Update matrices
+                    old_emb_flat = old_emb.view(-1, embed_dim).float()
+                    target_flat = target.view(-1, hidden_dim).float()
                     
-                    mat1 += preserve_scale * torch.mm(proj_flat.t(), emb_flat)
-                    mat2 += preserve_scale * torch.mm(emb_flat.t(), emb_flat)
+                    mat1 += preserve_scale * torch.mm(target_flat.t(), old_emb_flat)
+                    mat2 += preserve_scale * torch.mm(old_emb_flat.t(), old_emb_flat)
+
+                    # proj = torch.mm(emb, proj_matrix.weight.t())
+
+                    # emb_flat = emb.view(-1, embed_dim)
+                    # proj_flat = proj.view(-1, hidden_dim)
+                    
+                    # mat1 += preserve_scale * torch.mm(proj_flat.t(), emb_flat)
+                    # mat2 += preserve_scale * torch.mm(emb_flat.t(), emb_flat)
 
             # Update projection matrix
             # import pdb; pdb.set_trace()
-            mat1 = mat1.float()
-            mat2 = mat2.float()
-            proj_matrix.weight = torch.nn.Parameter(torch.mm(mat1, torch.inverse(mat2)).half())
+            proj_matrix.weight = torch.nn.Parameter(torch.mm(mat1, torch.inverse(mat2)).bfloat16())
 
     return ldm_stable
 
@@ -196,7 +212,7 @@ if __name__ == '__main__':
     parser.add_argument('--technique', help='editing technique (replace/tensor)', type=str, default='replace')
     parser.add_argument('--device', help='cuda device', type=str, default='0')
     parser.add_argument('--preserve_scale', help='preservation weight', type=float, default=0.1)
-    parser.add_argument('--erase_scale', help='erasure weight', type=float, default=1)
+    parser.add_argument('--erase_scale', help='erasure weight', type=float, default=0.3)
     
     args = parser.parse_args()
     
