@@ -1,0 +1,3 @@
+python train-scripts/sdxl_erase.py --concepts 'Pikachu'  --device 6 --erase_scale=0.3
+
+python eval-scripts/generate-images-sdxl.py --model_name='sdxl_edited_Pikachu.pt' --prompts_path 'data/pikachu.csv' --save_path 'evaluation_folder' --num_samples 2 --ddim_steps 4 --device 'cuda:6'
