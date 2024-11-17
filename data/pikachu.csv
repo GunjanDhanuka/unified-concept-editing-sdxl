@@ -1,4 +1,12 @@
 case_number,prompt,evaluation_seed
+44, raichu pokemon, 1000
+45, pichu pokemon, 1000
+46, charmander pokemon,1000
+47, wartortle pokemon,1000
+48, pachirisu pokemon,1000
+49, mew pokemon, 1000
+50, mewtwo pokemon, 1000
+51, haunter pokemon, 1000
 1, pikachu pokemon,1000
 2, charizard pokemon,1000
 3, bulbasaur pokemon,1000
